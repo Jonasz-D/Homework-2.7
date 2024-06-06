@@ -1,6 +1,7 @@
-from sqlalchemy import func
+from sqlalchemy import func, cast, Numeric
 from sqlalchemy.sql.expression import desc
 from models import session, Students, Groups, Teachers, Subjects, Grades
+
 
 def select_1():
     top_students = session.query(Students.student_name, func.avg(Grades.grade).label('avg_grade')) \
@@ -24,8 +25,8 @@ def select_2():
     print(top_student_subject)
 
 def select_3():
-    # avg_grade_group = session.query(func.round(func.avg(Grades.grade), 2).label('avg_grade')) \
-    avg_grade_group = session.query(func.avg(Grades.grade)) \
+    
+    avg_grade_group = session.query(func.round(cast(func.avg(Grades.grade), Numeric), 2).label('avg_grade')) \
         .join(Subjects) \
         .filter(Subjects.subject_name == 'Science') \
         .scalar()
